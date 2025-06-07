@@ -33,7 +33,7 @@ export default function IndexPage() {
               radius: "full",
               variant: "shadow",
             })}
-            href={"/"}
+            href={"/upload"}
           >
             Comenzar
           </Link>
