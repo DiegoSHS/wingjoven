@@ -1,7 +1,8 @@
-import { ImageSource, removeBackground } from '@imgly/background-removal-node'
+import { ImageSource, removeBackground } from '@imgly/background-removal'
 
 const blobToBuffer = async (blob: Blob): Promise<Buffer> => {
     try {
+        console.log('Converting blob to buffer...')
         const buffer = Buffer.from(await blob.arrayBuffer())
         return buffer
     } catch (error) {
@@ -11,6 +12,8 @@ const blobToBuffer = async (blob: Blob): Promise<Buffer> => {
 }
 
 export async function removeImageBackground(imgSource: ImageSource) {
+    console.log('Removing image background...')
+    console.log('Image source: ', imgSource)
     const blob = await removeBackground(imgSource)
     const buffer = await blobToBuffer(blob)
     const dataURL = `data:image/png;base64,${buffer.toString('base64')}`
