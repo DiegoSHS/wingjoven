@@ -20,6 +20,7 @@ import {
   SearchIcon,
 } from "@/components/icons";
 import { Logo } from "@/components/icons";
+import { Image } from "@heroui/react";
 
 export const Navbar = () => {
   const searchInput = (
@@ -48,12 +49,12 @@ export const Navbar = () => {
       <NavbarContent className="basis-1/5 sm:basis-full" justify="start">
         <NavbarBrand className="gap-3 max-w-fit">
           <Link
-            className="flex justify-start items-center gap-1"
+            className="flex justify-center items-center gap-1"
             color="foreground"
             href="/"
           >
-            <Logo />
-            <p className="font-bold text-inherit">ACME</p>
+            <Image className="rounded-none" src="/logo.png" alt="Logo" width={32} />
+            <p className="font-bold text-inherit">WING</p>
           </Link>
         </NavbarBrand>
         <div className="hidden lg:flex gap-4 justify-start ml-2">

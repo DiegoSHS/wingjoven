@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cloudinary/react": "^1.14.3",
+    "@cloudinary/url-gen": "^1.21.0",
     "@heroui/react": "^2.7.9",
     "@heroui/theme": "2.4.16",
     "@heroui/use-theme": "2.1.8",
@@ -17,6 +19,7 @@
     "@react-aria/visually-hidden": "3.8.23",
     "@react-types/shared": "3.29.1",
     "axios": "^1.9.0",
+    "cloudinary": "^2.6.1",
     "clsx": "2.1.1",
     "framer-motion": "^11.15.0",
     "onnxruntime-web": "^1.21.0-dev.20250206-d981b153d3",
