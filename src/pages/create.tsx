@@ -1,7 +1,29 @@
 import { title } from "@/components/primitives";
-import { Button, Form, Input } from "@heroui/react";
+import { Button, Form, Input, Select, SelectItem } from "@heroui/react";
 import axios from "axios";
 import { ChangeEvent, useState } from "react";
+
+const weaponTypes = [
+  {
+    label: "Pistola",
+    value: "pistol"
+  }, {
+    label: "Rifle",
+    value: "rifle"
+  }, {
+    label: "Escopeta",
+    value: "shotgun"
+  }, {
+    label: "Subfusil",
+    value: "submachine-gun"
+  }, {
+    label: "Sniper",
+    value: "sniper-rifle"
+  }, {
+    label: "Ametralladora",
+    value: "light-machine-gun"
+  }
+]
 
 export function CreateMetaPage() {
   const [file, setFile] = useState<File>();
@@ -31,9 +53,31 @@ export function CreateMetaPage() {
         <h1 className={title()}>Docs</h1>
       </div>
       <Form>
-        <Input>
-          d
-        </Input>
+        <Input placeholder="Nombre del arma" name="name" />
+        <Input placeholder="mirilla" name="optic" />
+        <Select
+          isRequired
+          label="Cañon"
+          placeholder="Elije un cañon"
+          name="barrel"
+          items={[] as { label: string; value: string }[]}
+        >
+          {
+            (barrel) => <SelectItem key={barrel.value}>{barrel.label}</SelectItem>
+          }
+        </Select>
+        <Select
+          isRequired
+          label="Tipo de arma"
+          placeholder="Elije un tipo de arma"
+          name="weaponType"
+          items={weaponTypes}
+        >
+          {
+            (weaponType) => <SelectItem key={weaponType.value}>{weaponType.label}</SelectItem>
+          }
+        </Select>
+        <Input placeholder="Nombre del arma" name="muzzle" />
       </Form>
       <Button onPress={handleUpload} variant="shadow">
         ButtonTest
