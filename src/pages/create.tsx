@@ -1,41 +1,29 @@
 import { title } from "@/components/primitives";
-import { Button, Form, Input, Select, SelectItem } from "@heroui/react";
+import { Button, Form, Image, Input, Select, SelectItem } from "@heroui/react";
 import axios from "axios";
 import { ChangeEvent, useState } from "react";
 
-const weaponTypes = [
-  {
-    label: "Pistola",
-    value: "pistol"
-  }, {
-    label: "Rifle",
-    value: "rifle"
-  }, {
-    label: "Escopeta",
-    value: "shotgun"
-  }, {
-    label: "Subfusil",
-    value: "submachine-gun"
-  }, {
-    label: "Sniper",
-    value: "sniper-rifle"
-  }, {
-    label: "Ametralladora",
-    value: "light-machine-gun"
-  }
-]
+const weaponTypes: {
+  label: string;
+  value: string;
+}[] = [
+
+  ]
 
 export function CreateMetaPage() {
   const [file, setFile] = useState<File>();
+  const [isLoading, setIsLoading] = useState(false);
   const handleUpload = async () => {
-    console.log("Image uploaded");
+    console.log("Uploading file");
     const formData = new FormData();
     if (!file) {
       console.error("No file selected");
       return;
     }
-    formData.append("image", file);
-    const { data } = await axios.post('http://localhost:3000/upload', formData)
+    formData.append("file", file);
+    setIsLoading(true)
+    const { data } = await axios.post('http://localhost:3000/cloudinary', formData)
+    setIsLoading(false)
     console.log("Response from server:", data);
   }
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -50,39 +38,50 @@ export function CreateMetaPage() {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-lg text-center justify-center">
-        <h1 className={title()}>Docs</h1>
+        <h1 className={title()}>Subir arma nueva</h1>
       </div>
-      <Form>
-        <Input placeholder="Nombre del arma" name="name" />
-        <Input placeholder="mirilla" name="optic" />
-        <Select
-          isRequired
-          label="Cañon"
-          placeholder="Elije un cañon"
-          name="barrel"
-          items={[] as { label: string; value: string }[]}
-        >
-          {
-            (barrel) => <SelectItem key={barrel.value}>{barrel.label}</SelectItem>
-          }
-        </Select>
-        <Select
-          isRequired
-          label="Tipo de arma"
-          placeholder="Elije un tipo de arma"
-          name="weaponType"
-          items={weaponTypes}
-        >
-          {
-            (weaponType) => <SelectItem key={weaponType.value}>{weaponType.label}</SelectItem>
-          }
-        </Select>
-        <Input placeholder="Nombre del arma" name="muzzle" />
-      </Form>
-      <Button onPress={handleUpload} variant="shadow">
-        ButtonTest
-      </Button>
-      <Input type="file" onChange={handleChange} />
+      <div className="flex flex-col sm:flex-row gap-2">
+        <Form className={file ? "w-full sm:w-1/2" : "w-full"}>
+          <Input isDisabled={isLoading} placeholder="Nombre del arma" name="name" />
+          <Input isDisabled={isLoading} placeholder="mirilla" name="optic" />
+          <Select
+            isRequired
+            isDisabled={isLoading}
+            label="Cañon"
+            placeholder="Elije un cañon"
+            name="barrel"
+            items={[] as { label: string; value: string }[]}
+          >
+            {
+              (barrel) => <SelectItem key={barrel.value}>{barrel.label}</SelectItem>
+            }
+          </Select>
+          <Select
+            isRequired
+            isDisabled={isLoading}
+            label="Tipo de arma"
+            placeholder="Elije un tipo de arma"
+            name="weaponType"
+            items={weaponTypes}
+          >
+            {
+              (weaponType) => <SelectItem key={weaponType.value}>{weaponType.label}</SelectItem>
+            }
+          </Select>
+          <Input isDisabled={isLoading} placeholder="Nombre del arma" name="muzzle" />
+          <Input type="file" onChange={handleChange} />
+          <Button isLoading={isLoading} className="self-center" color="primary" onPress={handleUpload} variant="solid">
+            Subir
+          </Button>
+        </Form>
+        {
+          (file != undefined) && (
+            <Image isBlurred isLoading={isLoading} classNames={{
+              wrapper: "w-full sm:w-1/2",
+            }} src={file ? URL.createObjectURL(file) : ""} alt="Vista previa" className="object-cover aspect-video" />
+          )
+        }
+      </div>
 
     </section>
   );

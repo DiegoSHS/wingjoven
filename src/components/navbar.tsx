@@ -19,7 +19,6 @@ import {
   TwitterIcon,
   SearchIcon,
 } from "@/components/icons";
-import { Logo } from "@/components/icons";
 import { Image } from "@heroui/react";
 
 export const Navbar = () => {
@@ -109,7 +108,7 @@ export const Navbar = () => {
                       ? "danger"
                       : "foreground"
                 }
-                href="#"
+                href={item.href}
                 size="lg"
               >
                 {item.label}
