@@ -5,6 +5,12 @@ import { useEffect, useState } from "react";
 import { backgroundRemoval } from "@cloudinary/url-gen/actions/effect";
 import { ApiResult } from "@/features/apiClient";
 import { useCloudinary } from "@/features/image/application/providers/imageProvider";
+import { ResourceApiResponse } from "cloudinary";
+
+interface Resource {
+  secure_url: string;
+  public_id: string;
+}
 
 export function MetaCard({ url }: { url: string }) {
   return (
@@ -35,36 +41,32 @@ export function MetaCard({ url }: { url: string }) {
   )
 }
 
-export function MetaCards({ data }: { data: ImageRes[] }) {
+export function MetaCards({ data }: { data: Resource[] }) {
   return (
     <div className="flex flex-wrap justify-center gap-2">
       {data.length !== 0 && data.map((item) => (
-        <MetaCard key={item.id} url={item.url} />
+        <MetaCard key={item.public_id} url={item.secure_url} />
       ))}
     </div>
   );
 }
-interface ImageRes {
-  url: string
-  id: string
-}
 
 export function MetaPage() {
-  const [weaponData, setWeaponData] = useState<ImageRes[]>([]);
+  const [weaponData, setWeaponData] = useState<Resource[]>([]);
   const cld = useCloudinary()
   useEffect(() => {
     const fetch = async () => {
-      const { data } = await axios.get<ApiResult<ImageRes[]>>('http://localhost:3000/cloudinary')
+      const { data: { data } } = await axios.get<ApiResult<ResourceApiResponse>>('http://localhost:3000/cloudinary')
       console.log("Fetched images:", data);
-      const newData = data.data.map((item) => {
-        const url = cld.image(item.id)
+      const newData = data.resources.map((item) => {
+        const url = cld.image(item.secure_url)
           .format('auto')
           .quality('auto')
           .effect(backgroundRemoval())
           .toURL()
         return {
           ...item,
-          url
+          secure_url: url,
         };
       });
       setWeaponData(newData);
