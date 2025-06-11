@@ -2,8 +2,9 @@ import { title } from "@/components/primitives";
 import { Card, CardBody, CardFooter, CardHeader, Chip, Image } from "@heroui/react";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Cloudinary } from "@cloudinary/url-gen";
 import { backgroundRemoval } from "@cloudinary/url-gen/actions/effect";
+import { ApiResult } from "@/features/apiClient";
+import { useCloudinary } from "@/features/image/application/providers/imageProvider";
 
 export function MetaCard({ url }: { url: string }) {
   return (
@@ -43,31 +44,17 @@ export function MetaCards({ data }: { data: ImageRes[] }) {
     </div>
   );
 }
-
-interface ApiResponse<T> {
-  data: T
-  message: string
-  error: string
-}
-
 interface ImageRes {
   url: string
   id: string
 }
 
-const cld = new Cloudinary({
-  cloud: {
-    apiKey: import.meta.env.VITE_CLOUDINARY_API_KEY,
-    apiSecret: import.meta.env.VITE_CLOUDINARY_API_SECRET,
-    cloudName: import.meta.env.VITE_CLOUDINARY_CLOUD_NAME
-  }
-})
-
 export function MetaPage() {
   const [weaponData, setWeaponData] = useState<ImageRes[]>([]);
+  const cld = useCloudinary()
   useEffect(() => {
     const fetch = async () => {
-      const { data } = await axios.get<ApiResponse<ImageRes[]>>('http://localhost:3000/cloudinary')
+      const { data } = await axios.get<ApiResult<ImageRes[]>>('http://localhost:3000/cloudinary')
       console.log("Fetched images:", data);
       const newData = data.data.map((item) => {
         const url = cld.image(item.id)
