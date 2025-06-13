@@ -1,16 +1,17 @@
-interface BaseItem {
-    id: number;
-    name: string;
+import { useReducer } from "react";
+
+export interface Action<T> {
+    type: 'SET' | 'CREATE' | 'UPDATE' | 'DESELECT' | 'DELETE' | 'SELECT' | 'RESET';
+    payload?: T | T[];
 }
 
-type Action<T> = {
-    type: 'SET' | 'CREATE' | 'UPDATE' | 'DESELECT' | 'DELETE' | 'SELECT'
-    payload: T | T[];
-}
-
-interface BaseState<T> {
+export interface BaseState<T> {
     items: T[];
     selectedItem?: T;
+}
+
+interface BaseItem {
+    id: number;
 }
 
 export function BaseReducer<T extends BaseItem>({ items, selectedItem }: BaseState<T>, { type, payload }: Action<T>): BaseState<T> {
@@ -40,10 +41,28 @@ export function BaseReducer<T extends BaseItem>({ items, selectedItem }: BaseSta
                 items: items.filter(item => item.id !== (payload as T).id),
                 selectedItem
             };
+        case "SELECT":
+            return {
+                items,
+                selectedItem: payload as T
+            };
+        case "RESET":
+            return {
+                items: [],
+                selectedItem: undefined
+            };
         default:
             return {
                 items,
                 selectedItem
             };
     }
+}
+
+export function useBaseReducer<T extends BaseItem>() {
+    const [state, dispatch] = useReducer(BaseReducer<T>, {
+        items: [],
+        selectedItem: undefined
+    });
+    return { state, dispatch };
 }

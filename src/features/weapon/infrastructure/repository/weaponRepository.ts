@@ -2,7 +2,7 @@ import { ApiResult } from "@/features/apiClient";
 import { WeaponRepository } from "../../domain/repository/weaponRespository";
 import { Weapon } from "../../domain/entities/weapon";
 
-export class WeaponDatasourceImp extends WeaponRepository {
+export class WeaponRepositoryImp extends WeaponRepository {
     constructor(
         private readonly weaponDatasource: WeaponRepository
     ) {
