@@ -16,7 +16,7 @@ export class WeaponDatasourceImp extends WeaponDatasource {
     }
 
     async createWeapon(weapon: Weapon): Promise<ApiResult<Weapon>> {
-        const { data } = await ApiClient.put<ApiResult<Weapon>>('/weapon', weapon);
+        const { data } = await ApiClient.post<ApiResult<Weapon>>('/weapon', weapon);
         return data;
     }
 

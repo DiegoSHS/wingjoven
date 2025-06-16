@@ -1,6 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 
-import { CreateMetaPage } from "./pages/create";
+import { CreateMetaPage } from "./pages/newLoadout";
 import { MetaPage } from "./pages/meta";
 import { IndexPage } from "./pages";
 import { WeaponPage } from "./pages/weapons";

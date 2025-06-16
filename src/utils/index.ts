@@ -11,7 +11,7 @@ export interface BaseState<T> {
 }
 
 interface BaseItem {
-    id: number;
+    id?: number;
 }
 
 export function BaseReducer<T extends BaseItem>({ items, selectedItem }: BaseState<T>, { type, payload }: Action<T>): BaseState<T> {

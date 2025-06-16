@@ -1,5 +1,5 @@
 export interface Weapon<T = any, U = any> {
-    id: number;
+    id?: number;
     name: string;
     gameId?: number;
     weaponCategoryId?: number;

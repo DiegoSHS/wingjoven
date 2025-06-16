@@ -19,7 +19,6 @@ export function WeaponProvider({ children }: { children: React.ReactNode }) {
     )
     const getWeapons = async () => {
         const { data } = await repository.getAllWeapons()
-        console.log("Fetched weapons:", data);
         dispatch({ type: 'SET', payload: data });
     }
     return (
