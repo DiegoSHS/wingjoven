@@ -77,7 +77,7 @@ export function CreateMetaPage() {
           <AsyncAutocomplete
             name="Weapon"
             defaultSelectedItem={loadout.weapon}
-            route="/weaponCategory/search"
+            route="/weapon/search"
           />
           <Divider />
           {
