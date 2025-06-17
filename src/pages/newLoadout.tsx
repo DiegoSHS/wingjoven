@@ -2,7 +2,6 @@ import { title } from "@/components/primitives";
 import { Button, Divider, Form, Image, Input } from "@heroui/react";
 import { ChangeEvent, useEffect, useState } from "react";
 import { useAttachmentCategory } from "@/features/attachmentCategory/application/providers/attachmentCategoryProvider";
-import { useAttachment } from "@/features/attachment/application/providers/attachmentProvider";
 import { AsyncAutocomplete } from "@/components/asyncAutocomplete";
 import { TempLoadout } from "@/features/loadout/domain/entities/loadout";
 import { useLoadout } from "@/features/loadout/application/providers/loadoutProvider";
@@ -10,7 +9,6 @@ import { useLoadout } from "@/features/loadout/application/providers/loadoutProv
 export function CreateMetaPage() {
   const { getAttachmentCategories } = useAttachmentCategory()
   const { getTemporalLoadout } = useLoadout()
-  const { getAttachments } = useAttachment()
   const [file, setFile] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
   const [loadout, setLoadout] = useState<TempLoadout>({
@@ -61,7 +59,6 @@ export function CreateMetaPage() {
 
   useEffect(() => {
     getAttachmentCategories()
-    getAttachments()
     return () => {
 
     };
@@ -73,7 +70,11 @@ export function CreateMetaPage() {
       </div>
       <div className="flex flex-col sm:flex-row gap-2">
         <Form className={file ? "w-full sm:w-1/2" : "w-full"}>
-          <Input type="file" onChange={handleChange} />
+          <Input
+            isRequired
+            type="file"
+            onChange={handleChange}
+          />
           <AsyncAutocomplete
             name="Weapon"
             defaultSelectedItem={loadout.weapon}
@@ -85,9 +86,9 @@ export function CreateMetaPage() {
               loadout.attachments.map((item) => {
                 return (
                   <AsyncAutocomplete
-                    key={item.attachmentCategory}
-                    name={item.attachmentCategory}
-                    defaultSelectedItem={item.attachments}
+                    key={item.category.id}
+                    name={item.category.name}
+                    defaultSelectedItem={item.attachment}
                     route="/attachment/search"
                   />
                 )
@@ -97,13 +98,23 @@ export function CreateMetaPage() {
         </Form>
         {
           (file != undefined) && (
-            <Image isBlurred isLoading={isLoading} classNames={{
-              wrapper: "w-full sm:w-1/2",
-            }} src={file ? URL.createObjectURL(file) : ""} alt="Vista previa" className="object-cover aspect-video" />
+            <Image
+              isBlurred
+              classNames={{
+                wrapper: "w-full sm:w-1/2",
+              }}
+              src={file ? URL.createObjectURL(file) : ""}
+              alt="Vista previa" className="object-cover aspect-video"
+            />
           )
         }
       </div>
-      <Button isLoading={isLoading} className="self-center" color="primary" variant="solid">
+      <Button
+        isLoading={isLoading}
+        className="self-center"
+        color="primary"
+        variant="solid"
+      >
         Subir
       </Button>
 

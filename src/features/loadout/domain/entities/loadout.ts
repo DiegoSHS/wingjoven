@@ -1,4 +1,5 @@
 import { Attachment } from "@/features/attachment/domain/entities/attachment";
+import { AttachmentCategory } from "@/features/attachmentCategory/domain/entities/attachmentCategory";
 import { Weapon } from "@/features/weapon/domain/entities/weapon";
 import { WeaponCategory } from "@/features/weaponCategory/domain/entities/weaponCategory";
 
@@ -9,8 +10,8 @@ export interface Loadout {
 
 export interface TempLoadout {
     attachments: {
-        attachmentCategory: '',
-        attachments: Attachment
+        category: AttachmentCategory,
+        attachment: Attachment
     }[]
     weapon: Weapon
     weaponCategory: WeaponCategory

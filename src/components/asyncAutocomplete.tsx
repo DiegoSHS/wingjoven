@@ -37,8 +37,10 @@ export const AsyncAutocomplete = ({ name, defaultSelectedItem, route }: Autocomp
         },
     });
     useEffect(() => {
+        console.log("defaultSelectedItem", defaultSelectedItem);
         if (defaultSelectedItem) {
             attachmentList.setFilterText(defaultSelectedItem.name);
+            setSelectedKey(defaultSelectedItem.id as Key);
         }
         return () => {
             attachmentList.setFilterText("");
@@ -56,6 +58,7 @@ export const AsyncAutocomplete = ({ name, defaultSelectedItem, route }: Autocomp
             listboxProps={{
                 emptyContent: 'No attachments found',
             }}
+            isClearable
         >
             {
                 (attachment) => (

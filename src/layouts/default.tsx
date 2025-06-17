@@ -18,7 +18,7 @@ export default function DefaultLayout({
           isExternal
           className="flex items-center gap-1 text-current"
           href="https://x.com/SuperHackSystem"
-          title="heroui.com homepage"
+          title="Perfil de X (Twitter) de SuperHackSystem"
         >
           <span className="text-default-600">Powered by</span>
           <p className="text-primary">VancedSHS</p>
