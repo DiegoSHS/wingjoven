@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { Loadout } from "../../domain/entities/loadout";
+import { Loadout, TempLoadout } from "../../domain/entities/loadout";
 import { LoadoutRepositoryImp } from "../../infrastructure/repository/loadoutRepository";
 import { LoadoutDatasourceImp } from "../../infrastructure/datasources/loadoutDatasource";
 import { Action, BaseState, useBaseReducer } from "@/utils";
@@ -8,6 +8,7 @@ interface LoadoutContextType {
     state: BaseState<Loadout>;
     dispatch: React.Dispatch<Action<Loadout>>;
     getLoadouts: () => Promise<void>;
+    getTemporalLoadout: (formData: FormData) => Promise<TempLoadout>;
 }
 
 const LoadoutContext = createContext<LoadoutContextType | undefined>(undefined);
@@ -21,8 +22,12 @@ export function LoadoutProvider({ children }: { children: React.ReactNode }) {
         const { data } = await repository.getAllLoadouts();
         dispatch({ type: 'SET', payload: data });
     };
+    const getTemporalLoadout = async (formData: FormData) => {
+        const { data } = await repository.getTemporalLoadout(formData);
+        return data;
+    }
     return (
-        <LoadoutContext.Provider value={{ state, dispatch, getLoadouts }}>
+        <LoadoutContext.Provider value={{ state, dispatch, getLoadouts, getTemporalLoadout }}>
             {children}
         </LoadoutContext.Provider>
     );

@@ -10,7 +10,7 @@ export interface BaseState<T> {
     selectedItem?: T;
 }
 
-interface BaseItem {
+export interface BaseItem {
     id?: number;
 }
 

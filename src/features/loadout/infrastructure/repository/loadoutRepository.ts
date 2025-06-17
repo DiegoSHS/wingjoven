@@ -1,5 +1,5 @@
 import { ApiResult } from "@/features/apiClient";
-import { Loadout } from "../../domain/entities/loadout";
+import { Loadout, TempLoadout } from "../../domain/entities/loadout";
 import { LoadoutRepository } from "../../domain/repository/loadoutRepository";
 
 export class LoadoutRepositoryImp extends LoadoutRepository {
@@ -20,5 +20,8 @@ export class LoadoutRepositoryImp extends LoadoutRepository {
     }
     deleteLoadout(id: number): Promise<ApiResult<Loadout>> {
         return this.datasource.deleteLoadout(id);
+    }
+    getTemporalLoadout(formData: FormData): Promise<ApiResult<TempLoadout>> {
+        return this.datasource.getTemporalLoadout(formData);
     }
 }

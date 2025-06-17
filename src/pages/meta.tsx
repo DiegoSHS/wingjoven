@@ -6,7 +6,6 @@ import { backgroundRemoval } from "@cloudinary/url-gen/actions/effect";
 import { ApiResult } from "@/features/apiClient";
 import { useCloudinary } from "@/features/image/application/providers/imageProvider";
 import { ResourceApiResponse } from "cloudinary";
-import { useWeapon } from "@/features/weapon/application/providers/weaponProvider";
 
 interface Resource {
   secure_url: string;

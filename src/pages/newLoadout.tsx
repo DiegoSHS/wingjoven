@@ -1,25 +1,16 @@
 import { title } from "@/components/primitives";
-import { ApiClient, ApiResult } from "@/features/apiClient";
-import { Weapon } from "@/features/weapon/domain/entities/weapon";
-import { WeaponCategory } from "@/features/weaponCategory/domain/entities/weaponCategory";
-import { Autocomplete, AutocompleteItem, Button, Divider, Form, Image, Input } from "@heroui/react";
+import { Button, Divider, Form, Image, Input } from "@heroui/react";
 import { ChangeEvent, useEffect, useState } from "react";
-import { useAsyncList } from "@react-stately/data";
-import { Attachment } from "@/features/attachment/domain/entities/attachment";
-import { useWeaponCategory } from "@/features/weaponCategory/application/providers/weaponCategoryProvider";
 import { useAttachmentCategory } from "@/features/attachmentCategory/application/providers/attachmentCategoryProvider";
-
-interface TempLoadout {
-  attachments: {
-    attachmentCategory: '',
-    attachments: Attachment[]
-  }[]
-  weapon: Weapon
-  weaponCategory: WeaponCategory
-}
+import { useAttachment } from "@/features/attachment/application/providers/attachmentProvider";
+import { AsyncAutocomplete } from "@/components/asyncAutocomplete";
+import { TempLoadout } from "@/features/loadout/domain/entities/loadout";
+import { useLoadout } from "@/features/loadout/application/providers/loadoutProvider";
 
 export function CreateMetaPage() {
-  const { getAttachmentCategories, state: { items: attachmentCategories } } = useAttachmentCategory()
+  const { getAttachmentCategories } = useAttachmentCategory()
+  const { getTemporalLoadout } = useLoadout()
+  const { getAttachments } = useAttachment()
   const [file, setFile] = useState<File>();
   const [isLoading, setIsLoading] = useState(false);
   const [loadout, setLoadout] = useState<TempLoadout>({
@@ -33,20 +24,6 @@ export function CreateMetaPage() {
       name: "",
     }
   })
-  let list = useAsyncList({
-    async load({ signal, filterText }) {
-      let { data: { data } } = await ApiClient.get<ApiResult<Weapon[]>>('/weapon', {
-        params: {
-          name: filterText,
-        },
-        signal,
-      });
-      return {
-        items: data,
-      };
-    },
-  });
-
   const handleUpload = async (file: File) => {
     console.log("Uploading file");
     const formData = new FormData();
@@ -56,22 +33,21 @@ export function CreateMetaPage() {
     }
     formData.append("file", file);
     setIsLoading(true)
-    const { data: { data } } = await ApiClient.post<ApiResult<TempLoadout>>('/loadout/temporal', formData)
-    if (!data) {
-      console.error("No data received from server");
-      setIsLoading(false)
-      return;
-    }
+    const { attachments, weapon, weaponCategory } = await getTemporalLoadout(formData);
     setLoadout((loadout) => {
       return {
         ...loadout,
-        attachments: data.attachments,
-        weapon: data.weapon ? data.weapon : loadout.weapon,
-        weaponCategory: data.weaponCategory ? data.weaponCategory : loadout.weaponCategory,
+        attachments: attachments,
+        weapon: weapon ?? loadout.weapon,
+        weaponCategory: weaponCategory ?? loadout.weaponCategory,
       }
     })
     setIsLoading(false)
-    console.log("Response from server:", data);
+    console.log("Response from server:", {
+      attachments,
+      weapon,
+      weaponCategory
+    });
   }
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
@@ -82,8 +58,10 @@ export function CreateMetaPage() {
       handleUpload(detectedFiles[0])
     }
   }
+
   useEffect(() => {
     getAttachmentCategories()
+    getAttachments()
     return () => {
 
     };
@@ -96,32 +74,25 @@ export function CreateMetaPage() {
       <div className="flex flex-col sm:flex-row gap-2">
         <Form className={file ? "w-full sm:w-1/2" : "w-full"}>
           <Input type="file" onChange={handleChange} />
-          <Autocomplete isDisabled={isLoading} label="Nombre del arma" items={list.items as Weapon[]} selectedKey={loadout.weapon.id + ""}>
-            {(item) => (
-              <AutocompleteItem key={item.id}>
-                {
-                  item.name
-                }
-              </AutocompleteItem>
-            )}
-          </Autocomplete>
+          <AsyncAutocomplete
+            name="Weapon"
+            defaultSelectedItem={loadout.weapon}
+            route="/weaponCategory/search"
+          />
           <Divider />
           {
-            attachmentCategories.map((item) => {
-              return (
-                <Autocomplete key={item.id} label={item.name} defaultItems={item.attachments || []}>
-                  {
-                    (attachment) => (
-                      <AutocompleteItem key={attachment.id}>
-                        {
-                          attachment.name
-                        }
-                      </AutocompleteItem>
-                    )
-                  }
-                </Autocomplete>
-              )
-            })
+            loadout.attachments.length > 0 && (
+              loadout.attachments.map((item) => {
+                return (
+                  <AsyncAutocomplete
+                    key={item.attachmentCategory}
+                    name={item.attachmentCategory}
+                    defaultSelectedItem={item.attachments}
+                    route="/attachment/search"
+                  />
+                )
+              })
+            )
           }
         </Form>
         {

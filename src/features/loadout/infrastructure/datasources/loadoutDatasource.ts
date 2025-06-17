@@ -1,6 +1,6 @@
 import { ApiClient, ApiResult } from "@/features/apiClient";
 import { LoadoutDatasource } from "../../domain/datasources/loadoutDatasource";
-import { Loadout } from "../../domain/entities/loadout";
+import { Loadout, TempLoadout } from "../../domain/entities/loadout";
 
 export class LoadoutDatasourceImp extends LoadoutDatasource {
     async getLoadoutById(id: number): Promise<ApiResult<Loadout>> {
@@ -21,6 +21,10 @@ export class LoadoutDatasourceImp extends LoadoutDatasource {
     }
     async deleteLoadout(id: number): Promise<ApiResult<Loadout>> {
         const { data } = await ApiClient.delete<ApiResult<Loadout>>(`/loadout/${id}`);
+        return data;
+    }
+    async getTemporalLoadout(formData: FormData) {
+        const { data } = await ApiClient.post<ApiResult<TempLoadout>>('/loadout/temporal', formData)
         return data;
     }
 }
