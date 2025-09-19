@@ -9,6 +9,7 @@ interface LoadoutContextType {
     dispatch: React.Dispatch<Action<Loadout>>;
     getLoadouts: () => Promise<void>;
     getTemporalLoadout: (formData: FormData) => Promise<TempLoadout>;
+    createLoadout: (loadout: Loadout) => Promise<Loadout>;
 }
 
 const LoadoutContext = createContext<LoadoutContextType | undefined>(undefined);
@@ -22,12 +23,16 @@ export function LoadoutProvider({ children }: { children: React.ReactNode }) {
         const { data } = await repository.getAllLoadouts();
         dispatch({ type: 'SET', payload: data });
     };
+    const createLoadout = async (loadout: Loadout) => {
+        const { data } = await repository.createLoadout(loadout);
+        return data;
+    }
     const getTemporalLoadout = async (formData: FormData) => {
         const { data } = await repository.getTemporalLoadout(formData);
         return data;
     }
     return (
-        <LoadoutContext.Provider value={{ state, dispatch, getLoadouts, getTemporalLoadout }}>
+        <LoadoutContext.Provider value={{ state, dispatch, getLoadouts, getTemporalLoadout, createLoadout }}>
             {children}
         </LoadoutContext.Provider>
     );
